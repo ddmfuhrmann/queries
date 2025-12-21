@@ -7,7 +7,7 @@
 
     <groupId>io.github.ddmfuhrmann</groupId>
     <artifactId>queries</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -60,4 +60,11 @@
         </dependencies>
     </dependencyManagement>
 
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/ddmfuhrmann/queries</url>
+        </repository>
+    </distributionManagement>
 </project>
