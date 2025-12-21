@@ -219,6 +219,20 @@ Queries works best when:
 - You want predictable and debuggable behavior
 
 ---
+## Modules
+### Spring JDBC Integration
+
+Detailed documentation for the Spring integration (bean configuration, usage examples, mapping strategy, and H2-based tests) is available in `queries-spring/README.md`.
+
+Key topics covered:
+
+- Required Maven dependencies (`queries-spring` and `spring-jdbc`)
+- Explicit configuration of the `Queries` bean with `NamedParameterJdbcTemplate`
+- Usage in Spring services
+- Column and parameter mapping strategy
+- Integration testing with Spring and H2
+
+---
 
 ## Version
 
