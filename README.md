@@ -251,7 +251,6 @@ This version focuses on:
 
 Planned next steps for future versions of Queries include:
 
-- Implement the **Spring JDBC adapter** (`queries-spring`) using `NamedParameterJdbcTemplate`
 - Provide a **pure JDBC implementation** without any framework dependency
 - Add a **Micronaut-based implementation** aligned with Micronaut Data and JDBC support
 
