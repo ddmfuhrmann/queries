@@ -36,6 +36,5 @@ jobs:
             }]
 
       - name: Publish package
-        run: | 
-          mvn -B clean install -am -pl queries-spring
-          mvn -B deploy -pl queries-spring -DskipTests
+        run: |
+          mvn -B clean deploy -DskipTests
