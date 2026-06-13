@@ -2,6 +2,7 @@ package io.github.ddmfuhrmann.queries.support;
 
 import io.github.ddmfuhrmann.queries.Queries;
 import io.github.ddmfuhrmann.queries.Query;
+import io.github.ddmfuhrmann.queries.page.PageRequest;
 
 import java.util.Collections;
 import java.util.List;
@@ -35,11 +36,21 @@ public class InMemoryQueries implements Queries {
             }
 
             @Override
+            public List<T> list(Object params, PageRequest page) {
+                return Collections.unmodifiableList(rows);
+            }
+
+            @Override
             public Optional<T> one(Object params) {
                 if (rows.isEmpty()) {
                     return Optional.empty();
                 }
                 return Optional.of(rows.getFirst());
+            }
+
+            @Override
+            public long count(Object params) {
+                return rows.size();
             }
         }
 }

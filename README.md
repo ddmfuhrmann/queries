@@ -140,14 +140,18 @@ public interface Query<T> {
 
     List<T> list(Object params);
 
+    List<T> list(Object params, PageRequest page); // pageable rows only
+
     Optional<T> one(Object params);
+
+    long count(Object params);
 }
 ```
 
 - The row type defines the query
 - Parameters are passed as records
-- No overloads for single parameters
-- No dynamic SQL composition
+- `count` is derived from the same SQL (`SELECT COUNT(*) FROM (...)`) — no count record
+- `list(params, page)` and dynamic sort require `@QueriesPageable` on the row
 
 ---
 
@@ -177,6 +181,38 @@ Defines the column alias expected from the query result.
 - Mandatory for all record components
 - Enforces explicit mapping (snake_case friendly)
 - Prevents implicit naming assumptions
+
+---
+
+### @QueriesPageable (v0.2.0)
+
+Opts a row type into library-owned sorting, paging and count. The `.sql` resource
+must be the **base query only** — no `ORDER BY`/`LIMIT`/`OFFSET`.
+
+```java
+@QueriesResource("queries/city-list.sql")
+@QueriesPageable(defaultSort = {"cityName", "id"}, defaultPageSize = 50)
+public record CityListRow(
+        @QueriesColumn("id") Integer id,
+        @QueriesColumn("cityName") String cityName
+) {}
+```
+
+```java
+// explicit window + sort (sort fields must be @QueriesColumn aliases)
+var page = PageRequest.of(List.of(Order.asc("cityName")), 20, 0L);
+List<CityListRow> rows = queries.forType(CityListRow.class).list(filter, page);
+long total            = queries.forType(CityListRow.class).count(filter);
+
+// no PageRequest → defaultSort + defaultPageSize
+List<CityListRow> firstPage = queries.forType(CityListRow.class).list(filter);
+```
+
+- `defaultSort` aliases double as the **sort allow-list** (unknown field → `IllegalArgumentException`)
+- A row **without** the annotation is static: passing a `PageRequest` fails fast
+- `count` works on any row; for pageable rows it simply wraps the base query
+- The core stays framework-agnostic (`Direction`/`Order`/`PageRequest` in `…queries.page`);
+  Spring's `Pageable` is adapted by the caller
 
 ---
 
@@ -236,14 +272,12 @@ Key topics covered:
 
 ## Version
 
-Current version: **0.1.0**
+Current version: **0.2.0**
 
-This version focuses on:
-- Core abstractions
-- Metadata resolution
-- Fluent API
-- Spring JDBC integration
-- Strong contracts and fail-fast behavior
+- **0.2.0** — `@QueriesPageable`: library-owned sorting, paging and derived `count`
+  (framework-agnostic `page` types; base-query-only SQL; sort allow-list)
+- **0.1.0** — core abstractions, metadata resolution, fluent API, Spring JDBC
+  integration, strong contracts and fail-fast behavior
 
 ---
 

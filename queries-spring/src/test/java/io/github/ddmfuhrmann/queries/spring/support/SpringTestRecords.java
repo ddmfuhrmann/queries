@@ -1,6 +1,7 @@
 package io.github.ddmfuhrmann.queries.spring.support;
 
 import io.github.ddmfuhrmann.queries.annotation.QueriesColumn;
+import io.github.ddmfuhrmann.queries.annotation.QueriesPageable;
 import io.github.ddmfuhrmann.queries.annotation.QueriesResource;
 
 import java.math.BigDecimal;
@@ -11,6 +12,17 @@ import java.util.UUID;
 public final class SpringTestRecords {
 
     private SpringTestRecords() {}
+
+    /** Pageable list row: base SQL only, library owns sort + page window. */
+    @QueriesResource("sql/spring-sample-list.sql")
+    @QueriesPageable(defaultSort = {"name", "id"}, defaultPageSize = 2)
+    public record SpringSampleListRow(
+            @QueriesColumn("id") UUID id,
+            @QueriesColumn("name") String name,
+            @QueriesColumn("amount") BigDecimal amount
+    ) {
+        public record Filter(BigDecimal minAmount) {}
+    }
 
     @QueriesResource("sql/spring-sample-row.sql")
     public record SpringSampleRow(
